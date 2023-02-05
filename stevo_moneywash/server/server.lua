@@ -3,7 +3,7 @@ local ox_inventory = exports.ox_inventory
 RegisterServerEvent('stevo_moneywash:cleanmoney')
 AddEventHandler('stevo_moneywash:cleanmoney',function(amount)
   local xPlayer = ESX.GetPlayerFromId(source)
-  local tax = amount / 10 
+  local tax = amount * 0.10
   local final = amount - tax
   local item = xPlayer.getInventoryItem('black_money').count
   local item2 = xPlayer.getInventoryItem('moneywash_ticket').count
@@ -24,7 +24,7 @@ end)
 
 
 
-ESX.RegisterServerCallback('checkforkeycard', function(source, cb)
+QBCore.Functions.CreateCallback('checkforkeycard', function(source, cb)
   local items = ox_inventory:Search(source, 'count', {'meth', 'moneywash_keycard'})
   if items and items.moneywash_keycard >= 1 then
       item = true
