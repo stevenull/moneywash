@@ -24,7 +24,7 @@ end)
 
 
 
-QBCore.Functions.CreateCallback('checkforkeycard', function(source, cb)
+ESX.RegisterServerCallback('checkforkeycard', function(source, cb)
   local items = ox_inventory:Search(source, 'count', {'meth', 'moneywash_keycard'})
   if items and items.moneywash_keycard >= 1 then
       item = true
