@@ -1,43 +1,25 @@
 local ox_inventory = exports.ox_inventory
 
 RegisterServerEvent('stevo_moneywash:cleanmoney')
-AddEventHandler('stevo_moneywash:cleanmoney',function(amount)
-  local xPlayer = ESX.GetPlayerFromId(source)
-  local tax = amount * 0.10
-  local final = amount - tax
-  local item = xPlayer.getInventoryItem('black_money').count
-  local item2 = xPlayer.getInventoryItem('moneywash_ticket').count
-  if item >= amount then
-    if item2 >= 1 then
-        xPlayer.removeInventoryItem('black_money', amount)
-        xPlayer.removeInventoryItem('moneywash_ticket', 1)
-        xPlayer.triggerEvent('stevo_moneywash:washactions')
-        Citizen.Wait(Config.washduration)
-        xPlayer.addInventoryItem('money', final)
+AddEventHandler('stevo_moneywash:cleanmoney', function(Amount)
+  
+  local Player = source
+  local WashTax = Amount * Config.TaxRate
+  local WashTotal = Amount - WashTax
+  local black_money = exports.ox_inventory:Search(Player, 'count','black_money')
+  local moneywash_ticket =  exports.ox_inventory:Search(Player, 'count','moneywash_ticket')
+  
+  if black_money >= Amount then
+    if moneywash_ticket >= 1 then
+        exports.ox_inventory:RemoveItem(Player, 'black_money', Amount)
+        exports.ox_inventory:RemoveItem(Player, 'moneywash_ticket', 1)
+        TriggerClientEvent('stevo_moneywash:washactions', Player)
+        Citizen.Wait(Config.WashDuration)
+        exports.ox_inventory:AddItem(Player, 'money', WashTotal)
     else
-      TriggerClientEvent('ox_lib:notify', source, {title = 'No Wash Ticket', description = 'You do not have a wash ticket.', type = 'error'})
+      TriggerClientEvent('ox_lib:notify', Player, {title = 'No Wash Ticket', description = 'You do not have a wash ticket.', type = 'error'})
     end
   else
-    TriggerClientEvent('ox_lib:notify', source, {title = 'Not enough', description = 'You do not have enough black money.', type = 'error'})
+    TriggerClientEvent('ox_lib:notify', Player, {title = 'Not enough', description = 'You do not have enough black money.', type = 'error'})
   end
 end)
-
-
-
-ESX.RegisterServerCallback('checkforkeycard', function(source, cb)
-  local items = ox_inventory:Search(source, 'count', {'meth', 'moneywash_keycard'})
-  if items and items.moneywash_keycard >= 1 then
-      item = true
-      cb(item)
-  else
-      item = false
-      cb(item)
-  end
-end)
-
-
-
-
-
-
-
