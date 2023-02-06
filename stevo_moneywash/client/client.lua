@@ -1,19 +1,18 @@
-local hasAlreadyEnteredMarker, lastZone
-local currentAction, currentActionMsg, currentActionData = nil, nil, {}
-local washing = false
-local inwashroom = false
-local cooldown =  false
+local CurrentlyWashing = false
+local InsideLaundry = false
+local WashCooldown =  false
+local playerPed = PlayerPedId()
 
 
 AddEventHandler('stevo_moneywash:washmoney', function()
-	if washing == true then
+	if CurrentlyWashing == true then
 		lib.notify({
 			title = 'Currently Washing',
 			description = 'You are already washing money!',
 			type = 'error'
 		})
 	else
-		if cooldown == false then
+		if WashCooldown == false then
 		    local input = lib.inputDialog('Washing Amount', {'How much to wash?'})
 
 			if not input then return end
@@ -33,26 +32,33 @@ end)
 
 
 AddEventHandler('stevo_moneywash:exitlaundry', function() 
-	local playerPed = PlayerPedId()
-	if washing == true then
+	if CurrentlyWashing == true then
 		lib.notify({
 			title = 'Currently Washing',
 			description = 'You cannot exit the LaundryMat while washing!',
 			type = 'error'
 		})
 	else
-		inwashroom = false
-	    SetEntityCoords(playerPed, 1144.8295, -1000.2859, 45.2904, 277.0518)
-	    ExecuteCommand('e shrug')
+		InsideLaundry = false
+		DoScreenFadeOut(100)
+		Wait(500)
+	    SetEntityCoords(playerPed, 1143.8951, -1000.2181, 45.3136)
+		SetEntityHeading(playerPed, 275.8793)
+		Wait(1000)
+		DoScreenFadeIn(100)
 	end
 end)
 
 AddEventHandler('stevo_moneywash:enterlaundry', function()
-	ESX.TriggerServerCallback('checkforkeycard', function(item)
-		if item == true then
-			inwashroom = true
-			local playerPed = PlayerPedId()
-			SetEntityCoords(playerPed, 1138.1478, -3199.1692, -39.6657)
+    local keycard = exports.ox_inventory:Search('count','moneywash_keycard')
+		if keycard >= 1 then
+			InsideLaundry = true
+			DoScreenFadeOut(100)
+			Wait(1000)
+			SetEntityCoords(playerPed, 1138.1649, -3199.1167, -39.6658)
+			SetEntityHeading(playerPed, 357.9966)
+			Wait(1000)
+			DoScreenFadeIn(100)
 		else
 			lib.notify({
 				title = 'Access Denied',
@@ -60,13 +66,11 @@ AddEventHandler('stevo_moneywash:enterlaundry', function()
 				type = 'error'
 			})
 		end
-	end)	
 end)
 
 RegisterNetEvent('stevo_moneywash:washactions')
 AddEventHandler('stevo_moneywash:washactions', function()
-	washing = true
-	cooldown = true
+	CurrentlyWashing = true
 	lib.notify({
 		title = 'Started',
 		description = 'You have started the washing process.',
@@ -74,23 +78,21 @@ AddEventHandler('stevo_moneywash:washactions', function()
 	})
 	Citizen.Wait(1000)
 	if lib.progressBar({
-		duration = Config.washduration,
+		duration = Config.WashDuration,
 		label = 'Washing Money',
 		useWhileDead = false,
 		canCancel = false,
 	}) then lib.notify({title = 'Finished', description = 'You have finished washing your money!', type = 'inform'}) end
-	washing = false
-	Wait(Config.cooldown)
-	cooldown = false
+	CurrentlyWashing = false
+    Cooldown()
 end)
 
-RegisterNetEvent('notenoughblack', function()
-	lib.notify({
-		title = 'Not Enough',
-		description = 'You do not have enough black money.',
-		type = 'error'
-	})
-end)
+local function Cooldown()
+	WashCooldown = true
+	Wait(Config.Cooldown)
+	WashCooldown = false
+end
+
 
 
 
@@ -105,7 +107,7 @@ exports.ox_target:addSphereZone({
             icon = 'fa-solid fa-money-bill',
             label = 'Wash Money',
             canInteract = function()
-                return inwashroom
+                return InsideLaundry
             end
         }
     }
@@ -123,7 +125,7 @@ exports.ox_target:addSphereZone({
             icon = 'fa-solid fa-door-open',
             label = 'Exit LaundryMat',
             canInteract = function()
-                return inwashroom
+                return InsideLaundry
             end
         }
     }
@@ -142,8 +144,3 @@ exports.ox_target:addSphereZone({
         }
     }
 })
-
-
-
-
-
