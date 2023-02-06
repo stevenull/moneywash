@@ -4,14 +4,12 @@ lua54 'yes'
 
 author 'Stevo Scripts'
 description 'Advanced Moneywash Script'
-version '1.0'
+version '1.2'
 
 
 shared_scripts { 
-	'@es_extended/imports.lua',
-	'@es_extended/locale.lua',
 	'shared/config.lua',
-	'@ox_lib/init.lua',
+	'@ox_lib/init.lua'
 }
 
 client_scripts {	
@@ -24,7 +22,7 @@ server_scripts {
 }
 
 dependencies {
-	'es_extended',
 	'ox_lib',
-	'ox_target'
+	'ox_target',
+	'ox_inventory'
 }
