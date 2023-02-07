@@ -31,7 +31,7 @@ end)
 
 
 
-AddEventHandler('stevo_moneywash:exitlaundry', function() 
+AddEventHandler('stevo_moneywash:enterlaundry', function() 
 	if CurrentlyWashing == true then
 		lib.notify({
 			title = 'Currently Washing',
@@ -49,7 +49,7 @@ AddEventHandler('stevo_moneywash:exitlaundry', function()
 	end
 end)
 
-AddEventHandler('stevo_moneywash:enterlaundry', function()
+AddEventHandler('stevo_moneywash:exitlaundry', function()
     local keycard = exports.ox_inventory:Search('count','moneywash_keycard')
 		if keycard >= 1 then
 			InsideLaundry = true
