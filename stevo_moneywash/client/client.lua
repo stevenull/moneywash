@@ -28,10 +28,7 @@ AddEventHandler('stevo_moneywash:washmoney', function()
 	end
 end)
 
-
-
-
-AddEventHandler('stevo_moneywash:enterlaundry', function() 
+AddEventHandler('stevo_moneywash:exitlaundry', function() 
 	if CurrentlyWashing == true then
 		lib.notify({
 			title = 'Currently Washing',
@@ -49,7 +46,7 @@ AddEventHandler('stevo_moneywash:enterlaundry', function()
 	end
 end)
 
-AddEventHandler('stevo_moneywash:exitlaundry', function()
+AddEventHandler('stevo_moneywash:enterlaundry', function()
     local keycard = exports.ox_inventory:Search('count','moneywash_keycard')
 		if keycard >= 1 then
 			InsideLaundry = true
@@ -67,12 +64,6 @@ AddEventHandler('stevo_moneywash:exitlaundry', function()
 			})
 		end
 end)
-
-local function Cooldown()
-	WashCooldown = true
-	Wait(Config.Cooldown)
-	WashCooldown = false
-end
 
 RegisterNetEvent('stevo_moneywash:washactions')
 AddEventHandler('stevo_moneywash:washactions', function()
@@ -93,56 +84,57 @@ AddEventHandler('stevo_moneywash:washactions', function()
     Cooldown()
 end)
 
-
-
+local function Cooldown()
+	WashCooldown = true
+	Wait(Config.Cooldown)
+	WashCooldown = false
+end
 
 
 
 exports.ox_target:addSphereZone({
-    coords = vec3(1122.3206, -3193.2749, -40.623),
-    radius = 2,
-    debug = drawZones,
-    options = {
-        {
-            name = 'wash',
-            event = 'stevo_moneywash:washmoney',
-            icon = 'fa-solid fa-money-bill',
-            label = 'Wash Money',
-            canInteract = function()
-                return InsideLaundry
-            end
-        }
-    }
+	coords = vec3(1143.4563, -1000.2941, 45.3185),
+	radius = 1,
+	debug = drawZones,
+	options = {
+		{
+			name = 'entry',
+			event = 'stevo_moneywash:enterlaundry',
+			icon = 'fa-solid fa-door-open',
+			label = 'Enter LaundryMat',
+		}
+	}
+})
+exports.ox_target:addSphereZone({
+	coords = vec3(1137.6561, -3199.2949, -40.2689),
+	radius = 1,
+	debug = drawZones,
+	options = {
+		{
+			name = 'exit',
+			event = 'stevo_moneywash:exitlaundry',
+			icon = 'fa-solid fa-door-open',
+			label = 'Exit LaundryMat',
+			canInteract = function()
+				return InsideLaundry
+			end
+		}
+	}
 })
 
-
 exports.ox_target:addSphereZone({
-    coords = vec3(1138.1576, -3199.1143, -39.6656),
-    radius = 2,
-    debug = drawZones,
-    options = {
-        {
-            name = 'exit',
-            event = 'stevo_moneywash:exitlaundry',
-            icon = 'fa-solid fa-door-open',
-            label = 'Exit LaundryMat',
-            canInteract = function()
-                return InsideLaundry
-            end
-        }
-    }
-})
-
-exports.ox_target:addSphereZone({
-    coords = vec3(1143.4563, -1000.2941, 45.3185),
-    radius = 1,
-    debug = drawZones,
-    options = {
-        {
-            name = 'entry',
-            event = 'stevo_moneywash:enterlaundry',
-            icon = 'fa-solid fa-door-open',
-            label = 'Enter LaundryMat',
-        }
-    }
+	coords = vec3(1122.4954, -3193.2864, -40.3926),
+	radius = 1,
+	debug = drawZones,
+	options = {
+		{
+			name = 'wash',
+			event = 'stevo_moneywash:washmoney',
+			icon = 'fa-solid fa-money-bill',
+			label = 'Wash Money',
+			canInteract = function()
+				return InsideLaundry
+			end
+		}
+	}
 })
