@@ -65,6 +65,13 @@ AddEventHandler('stevo_moneywash:enterlaundry', function()
 		end
 end)
 
+local function Cooldown()
+	WashCooldown = true
+	Wait(Config.Cooldown)
+	WashCooldown = false
+end
+
+
 RegisterNetEvent('stevo_moneywash:washactions')
 AddEventHandler('stevo_moneywash:washactions', function()
 	CurrentlyWashing = true
@@ -83,13 +90,6 @@ AddEventHandler('stevo_moneywash:washactions', function()
 	CurrentlyWashing = false
     Cooldown()
 end)
-
-local function Cooldown()
-	WashCooldown = true
-	Wait(Config.Cooldown)
-	WashCooldown = false
-end
-
 
 
 exports.ox_target:addSphereZone({
