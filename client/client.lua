@@ -160,6 +160,3 @@ Citizen.CreateThread(function()
 		}
 	})	
 end)
-
-
-
