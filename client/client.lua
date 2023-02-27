@@ -3,6 +3,11 @@ local InsideLaundry = false
 local WashCooldown =  false
 local playerPed = PlayerPedId()
 
+local function Cooldown()
+	WashCooldown = true
+	Wait(Config.Cooldown)
+	WashCooldown = false
+end
 
 function WashMoney()
 	if CurrentlyWashing then
@@ -129,13 +134,6 @@ AddEventHandler('stevo_moneywash:washactions', function()
 	CurrentlyWashing = false
     Cooldown()
 end)
-
-local function Cooldown()
-	WashCooldown = true
-	Wait(Config.Cooldown)
-	WashCooldown = false
-end
-
 
 	exports.ox_target:addSphereZone({
 		coords = vec3(1143.4563, -1000.2941, 45.3185),
