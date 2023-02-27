@@ -12,12 +12,40 @@ function WashMoney()
 			type = 'error'
 		})
 	else
-		local WashTicket = exports.ox_inventory:Search('count','moneywash_ticket')
-		if WashTicket >= 1 then
+
+		if Config.UseTickets then
+			local WashTicket = exports.ox_inventory:Search('count','moneywash_ticket')
+			if WashTicket >= 1 then
+				if not WashCooldown then
+					SetEntityHeading(playerPed, 349.9048)
+					lib.requestAnimDict('anim@gangops@facility@servers@bodysearch@', 10)
+					TaskPlayAnim(playerPed, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
+					local input = lib.inputDialog('Washing Amount', {'How much to wash?'})
+		
+					if not input then return end
+					local WashAmount = tonumber(input[1])	
+					TriggerServerEvent('stevo_moneywash:cleanmoney', WashAmount)
+					Wait(500)
+					ClearPedTasksImmediately(playerPed)
+				else
+					lib.notify({
+						title = 'Cooldown Active',
+						description = 'The washing cooldown is active',
+						type = 'error'
+					})
+				end
+			else
+				lib.notify({
+					title = 'Access Denied',
+					description = 'You need a wash ticket to use this machine!',
+					type = 'error'
+				})
+			end
+		else
 			if not WashCooldown then
 				SetEntityHeading(playerPed, 349.9048)
 				lib.requestAnimDict('anim@gangops@facility@servers@bodysearch@', 10)
-                TaskPlayAnim(playerPed, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
+				TaskPlayAnim(playerPed, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
 				local input = lib.inputDialog('Washing Amount', {'How much to wash?'})
 	
 				if not input then return end
@@ -32,12 +60,6 @@ function WashMoney()
 					type = 'error'
 				})
 			end
-		else
-			lib.notify({
-				title = 'Access Denied',
-				description = 'You need a wash ticket to use this machine!',
-				type = 'error'
-			})
 		end
 	end
 end
@@ -61,15 +83,16 @@ function ExitLaundry()
 end
 
 function EnterLaundry()
-    local keycard = exports.ox_inventory:Search('count','moneywash_keycard')
+	if Config.UseEnterKeycard then
+		local keycard = exports.ox_inventory:Search('count','moneywash_keycard')
 		if keycard >= 1 then
-			InsideLaundry = true
 			DoScreenFadeOut(100)
 			Wait(1000)
 			SetEntityCoords(playerPed, 1138.1279, -3199.1963, -39.6657)
 			SetEntityHeading(playerPed, 6)
 			Wait(1000)
 			DoScreenFadeIn(100)
+			InsideLaundry = true
 		else
 			lib.notify({
 				title = 'Access Denied',
@@ -77,6 +100,15 @@ function EnterLaundry()
 				type = 'error'
 			})
 		end
+	else
+		DoScreenFadeOut(100)
+		Wait(1000)
+		SetEntityCoords(playerPed, 1138.1279, -3199.1963, -39.6657)
+		SetEntityHeading(playerPed, 6)
+		Wait(1000)
+		DoScreenFadeIn(100)
+		InsideLaundry = true
+	end
 end
 
 RegisterNetEvent('stevo_moneywash:washactions')
@@ -87,7 +119,7 @@ AddEventHandler('stevo_moneywash:washactions', function()
 		description = 'You have started the washing process.',
 		type = 'inform'
 	})
-	Citizen.Wait(1000)
+	Wait(1000)
 	if lib.progressBar({
 		duration = Config.WashDuration,
 		label = 'Washing Money',
