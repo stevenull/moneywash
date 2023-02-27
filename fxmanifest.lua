@@ -4,7 +4,7 @@ lua54 'yes'
 
 author 'Stevo Scripts'
 description 'Advanced Moneywash Script'
-version '1.2'
+version '1.3'
 
 
 shared_scripts { 

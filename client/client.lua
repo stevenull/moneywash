@@ -104,7 +104,7 @@ local function Cooldown()
 	WashCooldown = false
 end
 
-Citizen.CreateThread(function()
+
 	exports.ox_target:addSphereZone({
 		coords = vec3(1143.4563, -1000.2941, 45.3185),
 		radius = 1,
@@ -159,4 +159,6 @@ Citizen.CreateThread(function()
 			}
 		}
 	})	
-end)
+
+
+
