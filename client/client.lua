@@ -1,7 +1,6 @@
 local CurrentlyWashing = false
 local InsideLaundry = false
 local WashCooldown =  false
-local playerPed = PlayerPedId()
 
 local function Cooldown()
 	WashCooldown = true
@@ -22,16 +21,16 @@ function WashMoney()
 			local WashTicket = exports.ox_inventory:Search('count','moneywash_ticket')
 			if WashTicket >= 1 then
 				if not WashCooldown then
-					SetEntityHeading(playerPed, 349.9048)
+					SetEntityHeading(PlayerPedId(), 349.9048)
 					lib.requestAnimDict('anim@gangops@facility@servers@bodysearch@', 10)
-					TaskPlayAnim(playerPed, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
+					TaskPlayAnim(PlayerPedId(), 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
 					local input = lib.inputDialog('Washing Amount', {'How much to wash?'})
 		
 					if not input then return end
 					local WashAmount = tonumber(input[1])	
 					TriggerServerEvent('stevo_moneywash:cleanmoney', WashAmount)
 					Wait(500)
-					ClearPedTasksImmediately(playerPed)
+					ClearPedTasksImmediately(PlayerPedId())
 				else
 					lib.notify({
 						title = 'Cooldown Active',
@@ -48,16 +47,16 @@ function WashMoney()
 			end
 		else
 			if not WashCooldown then
-				SetEntityHeading(playerPed, 349.9048)
+				SetEntityHeading(PlayerPedId(), 349.9048)
 				lib.requestAnimDict('anim@gangops@facility@servers@bodysearch@', 10)
-				TaskPlayAnim(playerPed, 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
+				TaskPlayAnim(PlayerPedId(), 'anim@gangops@facility@servers@bodysearch@', 'player_search', 8.0, -8.0, -1, 48, 0)
 				local input = lib.inputDialog('Washing Amount', {'How much to wash?'})
 	
 				if not input then return end
 				local WashAmount = tonumber(input[1])	
 				TriggerServerEvent('stevo_moneywash:cleanmoney', WashAmount)
 				Wait(500)
-				ClearPedTasksImmediately(playerPed)
+				ClearPedTasksImmediately(PlayerPedId())
 			else
 				lib.notify({
 					title = 'Cooldown Active',
@@ -80,8 +79,8 @@ function ExitLaundry()
 		InsideLaundry = false
 		DoScreenFadeOut(100)
 		Wait(500)
-	    SetEntityCoords(playerPed, 1143.8951, -1000.2181, 45.3136)
-		SetEntityHeading(playerPed, 275.8793)
+	    SetEntityCoords(PlayerPedId(), 1143.8951, -1000.2181, 45.3136)
+		SetEntityHeading(PlayerPedId(), 275.8793)
 		Wait(1000)
 		DoScreenFadeIn(100)
 	end
@@ -93,8 +92,8 @@ function EnterLaundry()
 		if keycard >= 1 then
 			DoScreenFadeOut(100)
 			Wait(1000)
-			SetEntityCoords(playerPed, 1138.1279, -3199.1963, -39.6657)
-			SetEntityHeading(playerPed, 6)
+			SetEntityCoords(PlayerPedId(), 1138.1279, -3199.1963, -39.6657)
+			SetEntityHeading(PlayerPedId(), 6)
 			Wait(1000)
 			DoScreenFadeIn(100)
 			InsideLaundry = true
@@ -108,8 +107,8 @@ function EnterLaundry()
 	else
 		DoScreenFadeOut(100)
 		Wait(1000)
-		SetEntityCoords(playerPed, 1138.1279, -3199.1963, -39.6657)
-		SetEntityHeading(playerPed, 6)
+		SetEntityCoords(PlayerPedId(), 1138.1279, -3199.1963, -39.6657)
+		SetEntityHeading(PlayerPedId(), 6)
 		Wait(1000)
 		DoScreenFadeIn(100)
 		InsideLaundry = true
