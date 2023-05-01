@@ -134,7 +134,8 @@ AddEventHandler('stevo_moneywash:washactions', function()
     Cooldown()
 end)
 
-	exports.ox_target:addSphereZone({
+Citizen.CreateThread(function()
+    exports.ox_target:addSphereZone({
 		coords = vec3(1143.4563, -1000.2941, 45.3185),
 		radius = 1,
 		debug = drawZones,
@@ -168,8 +169,6 @@ end)
 			}
 		}
 	})
-	
-	
 	exports.ox_target:addSphereZone({
 		coords = vec3(1122.4954, -3193.2864, -40.3926),
 		radius = 1,
@@ -188,6 +187,10 @@ end)
 			}
 		}
 	})	
+end)
+
+
+	
 
 
 
